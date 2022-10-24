@@ -8,14 +8,22 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 })
 export class CarService {
 
-  public cars: Observable<Car[]>;
+    public cars: Observable<Car[]>;
     private carsSubject: BehaviorSubject<any>;
     private carRawData: Car[] = [];
+    private carDataTable: Car[] = [];
+
+    public selectedCar: Observable<Car>;
+    private selectedCarSubject: BehaviorSubject<any>;
+    private selectedCarData: Car | undefined;
 
     constructor(private httpClient: HttpClient) {
 
         this.carsSubject = new BehaviorSubject<Car[]>(this.carRawData);
         this.cars = this.carsSubject.asObservable();
+
+        this.selectedCarSubject = new BehaviorSubject<Car | undefined>(undefined);
+        this.selectedCar = this.selectedCarSubject.asObservable();
 
         const headers = new HttpHeaders({
             Accept: 'text/csv',
@@ -59,11 +67,22 @@ export class CarService {
                     this.carRawData.push(car);
                 });
 
-                this.carsSubject.next(this.carRawData);
+                this.carRawData.pop(); // Last element not a real car
+                this.carDataTable = this.carRawData;-
+                this.carsSubject.next(this.carDataTable);
             });
-
 
     }
 
+    getRange(attribute: string) {
+        // https://stackoverflow.com/questions/60330781/how-to-get-lowest-value-from-an-element-in-array-angular
+        var minData = this.carDataTable.reduce((prev, current) => (prev[attribute as keyof Car] < current[attribute as keyof Car]) ? prev : current);
+        var maxData = this.carDataTable.reduce((prev, current) => (prev[attribute as keyof Car] > current[attribute as keyof Car]) ? prev : current);
+        return [minData[attribute as keyof Car], maxData[attribute as keyof Car]];
+    }
+
+    selectCar(car: Car) {
+      this.selectedCarSubject.next(car);
+    }
 
 }

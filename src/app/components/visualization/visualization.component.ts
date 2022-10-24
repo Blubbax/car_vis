@@ -1,3 +1,5 @@
+import { Car } from './../../model/car';
+import { CarService } from './../../service/car.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,7 +9,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class VisualizationComponent implements OnInit {
 
-  constructor() { }
+  public carData : Car[] = [];
+  public selectedCar : Car | undefined;
+
+  constructor(private carService : CarService) {
+    this.carService.cars.subscribe(cars => {
+      this.carData = cars;
+    })
+
+    this.carService.selectedCar.subscribe(car => {
+      this.selectedCar = car;
+    })
+
+  }
 
   ngOnInit(): void {
   }

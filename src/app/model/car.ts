@@ -1,7 +1,7 @@
 export interface Car {
-  riskFactor: number;
-  normalizedLosses: number;   //symboling: -3, -2, -1, 0, 1, 2, 3.
-  make: string;               // continuous from 65 to 256.
+  riskFactor: number;         //symboling: -3, -2, -1, 0, 1, 2, 3.
+  normalizedLosses: number;   // continuous from 65 to 256.
+  make: string;
   fuelType: string;           // diesel, gas.
   aspiration: string;         // std, turbo.
   numOfDoors: number;         // four, two.

@@ -1,1 +1,37 @@
-<app-histogram></app-histogram>
+<div class="container">
+
+  <div class="left">
+    <div class="attribute-explorer">
+      <app-histogram [attribute]="'make'"></app-histogram>
+      <app-histogram [attribute]="'horsepower'"></app-histogram>
+      <app-histogram [attribute]="'cityMpg'"></app-histogram>
+      <app-histogram [attribute]="'highwayMpg'"></app-histogram>
+    </div>
+  </div>
+
+  <div class="center">
+    <app-parallel-coordinates [attributes]="['horsepower', 'highwayMpg', 'price']"></app-parallel-coordinates>
+    <app-scatter-plot [xAttribute]="'horsepower'" [yAttribute]="'cityMpg'" [categoricalAttribute]="'make'"></app-scatter-plot>
+    <app-table [attributes]="['make', 'horsepower', 'highwayMpg', 'price']"></app-table>
+  </div>
+
+  <div class="right">
+    <app-car [car]="selectedCar"></app-car>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>

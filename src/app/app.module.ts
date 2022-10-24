@@ -10,6 +10,9 @@ import { FooterComponent } from './components/footer/footer.component';
 import { TableComponent } from './vis/table/table.component';
 import { ScatterPlotComponent } from './vis/scatter-plot/scatter-plot.component';
 import { VisualizationComponent } from './components/visualization/visualization.component';
+import { ParallelCoordinatesComponent } from './vis/parallel-coordinates/parallel-coordinates.component';
+import { CarComponent } from './components/car/car.component';
+import { RadarChartComponent } from './vis/radar-chart/radar-chart.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +22,10 @@ import { VisualizationComponent } from './components/visualization/visualization
     FooterComponent,
     TableComponent,
     ScatterPlotComponent,
-    VisualizationComponent
+    VisualizationComponent,
+    ParallelCoordinatesComponent,
+    CarComponent,
+    RadarChartComponent
   ],
   imports: [
     BrowserModule,

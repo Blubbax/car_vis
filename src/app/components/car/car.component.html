@@ -1,0 +1,18 @@
+<div class="container">
+
+  <h1>{{ car?.make }}</h1>
+
+  <ul>
+    <li>FuleType: {{car?.fuelType}}</li>
+    <li>Aspiration: {{car?.aspiration}}</li>
+    <li>bodyStyle: {{car?.bodyStyle}}</li>
+    <li>driveWheels: {{car?.driveWheels}}</li>
+    <li>cityMpg: {{car?.cityMpg}}</li>
+    <li>highwayMpg: {{car?.highwayMpg}}</li>
+    <li>horsepower: {{car?.horsepower}}</li>
+  </ul>
+
+  <app-radar-chart [car]="car" [attributes]="['horsepower', 'cityMpg', 'highwayMpg']"></app-radar-chart>
+
+
+</div>
