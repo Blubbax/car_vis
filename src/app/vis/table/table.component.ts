@@ -1,6 +1,6 @@
 import { CarService } from './../../service/car.service';
 import { Car } from './../../model/car';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-table',
@@ -9,7 +9,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class TableComponent implements OnInit {
 
-  public data : Car[] = [];
+  @Input() public data : Car[] = [];
   @Input() attributes : string[] = [];
 
   private currentSortAttribute : string = '';
@@ -19,15 +19,16 @@ export class TableComponent implements OnInit {
   ngOnInit(): void {
     this.carService.cars.subscribe(cars => {
       this.data = cars;
-      this.showTable();
     });
-  }
 
-  showTable() {
+    this.carService.brushingSelection.subscribe(cars => {
+      this.data = cars;
+    })
 
-    this.attributes.forEach(attribute => {
-
+    this.carService.mainBrushingSelection.subscribe(cars => {
+      this.data = cars;
     });
+
   }
 
   getAttributeOfCar(car:Car, attribute:string) : any {

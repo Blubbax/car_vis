@@ -13,9 +13,14 @@ export class CarService {
     private carRawData: Car[] = [];
     private carDataTable: Car[] = [];
 
+    public brushingSelection: Observable<Car[]>;
+    private brushingSelectionSubject: BehaviorSubject<any>;
+
+    public mainBrushingSelection: Observable<Car[]>;
+    private mainBrushingSelectionSubject: BehaviorSubject<any>;
+
     public selectedCar: Observable<Car>;
     private selectedCarSubject: BehaviorSubject<any>;
-    private selectedCarData: Car | undefined;
 
     constructor(private httpClient: HttpClient) {
 
@@ -24,6 +29,12 @@ export class CarService {
 
         this.selectedCarSubject = new BehaviorSubject<Car | undefined>(undefined);
         this.selectedCar = this.selectedCarSubject.asObservable();
+
+        this.brushingSelectionSubject = new BehaviorSubject<Car[]>([]);
+        this.brushingSelection = this.brushingSelectionSubject.asObservable();
+
+        this.mainBrushingSelectionSubject = new BehaviorSubject<Car[]>([]);
+        this.mainBrushingSelection = this.mainBrushingSelectionSubject.asObservable();
 
         const headers = new HttpHeaders({
             Accept: 'text/csv',
@@ -68,13 +79,14 @@ export class CarService {
                 });
 
                 this.carRawData.pop(); // Last element not a real car
-                this.carDataTable = this.carRawData;-
+                this.carDataTable = this.carRawData;
                 this.carsSubject.next(this.carDataTable);
             });
 
     }
 
     getRange(attribute: string) {
+      // TODO does this work???
         // https://stackoverflow.com/questions/60330781/how-to-get-lowest-value-from-an-element-in-array-angular
         var minData = this.carDataTable.reduce((prev, current) => (prev[attribute as keyof Car] < current[attribute as keyof Car]) ? prev : current);
         var maxData = this.carDataTable.reduce((prev, current) => (prev[attribute as keyof Car] > current[attribute as keyof Car]) ? prev : current);
@@ -83,6 +95,18 @@ export class CarService {
 
     selectCar(car: Car) {
       this.selectedCarSubject.next(car);
+    }
+
+    setBrushingSelection(cars: Car[]) {
+      this.brushingSelectionSubject.next(cars);
+    }
+
+    setMainBrushingSelection(cars: Car[]) {
+      this.mainBrushingSelectionSubject.next(cars);
+    }
+
+    resetBrushingSelection() {
+      this.brushingSelectionSubject.next(this.carDataTable);
     }
 
 }

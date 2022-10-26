@@ -31,8 +31,6 @@ export class RadarChartComponent implements OnInit {
         dataValues.push(this.car[attribute as keyof Car]);
     })
 
-    console.log(dataValues);
-
     var data = [{
       type: 'scatterpolar',
       r: dataValues,

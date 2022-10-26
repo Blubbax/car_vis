@@ -14,23 +14,31 @@ export class ParallelCoordinatesComponent implements OnInit {
 
   @Input() attributes : string[] = [];
   private data : Car[] = [];
+  private selectionRanges = new Map();
 
   constructor(private carService:CarService) { }
 
   ngOnInit(): void {
+
     this.carService.cars.subscribe(cars => {
       this.data = cars;
       this.drawPlot();
+    });
+
+    this.carService.brushingSelection.subscribe(cars => {
+      this.data = cars;
+      this.drawPlot();
+      var timer = window.setTimeout(function(){ }, 700);
     })
 
   }
 
   drawPlot() {
-    var dimensions: { range: (string | number)[]; label: string; values: (string | number)[]; }[]= [];
+    var dimensions: { label: string; values: (string | number)[]; }[]= [];
     this.attributes.forEach(attribute => {
       var data = this.data.map(x => x[attribute as keyof Car]);
       dimensions.push({
-        range: this.carService.getRange(attribute),
+
         label: attribute,
         values: data
       });
@@ -48,8 +56,65 @@ export class ParallelCoordinatesComponent implements OnInit {
 
     var data = [trace]
 
-    Plotly.newPlot('parallel-coordinates', data);
+    var layout = { };
+
+    var config = {responsive: true}
+
+    Plotly.newPlot('parallel-coordinates', data, layout, config);
+
+    // https://stackoverflow.com/questions/44723417/plotly-js-selection-event-for-parallel-coordinates-plot
+    (document.getElementById('parallel-coordinates') as any).on('plotly_restyle', this.onDataBrushing.bind(this));
+    (document.getElementById('parallel-coordinates') as any).on('plotly_doubleclick', this.onDataBrushing.bind(this));
 
   }
+
+
+
+  onDataBrushing(event:any) {
+
+    var attribute = '';
+    var eventData;
+
+    this.attributes.forEach((attr, index) => {
+      if (event[0]['dimensions[' + index + '].constraintrange'] === null) {
+        this.selectionRanges.delete(attr);
+      } else {
+        if (event[0]['dimensions[' + index + '].constraintrange'] !== undefined) {
+          attribute = attr;
+          eventData = event[0]['dimensions[' + index + '].constraintrange'];
+          this.selectionRanges.set(attr, eventData);
+        }
+      }
+    });
+
+    var selection: Car[] = [];
+
+    this.data.forEach(car => {
+      var add = true;
+      this.selectionRanges.forEach((ranges, attr) => {
+        var foundInRange = false;
+        ranges.forEach((range: number[]) => {
+          if (car[attr as keyof Car] >= range[0] && car[attr as keyof Car] <= range[1]) {
+            foundInRange = true;
+          }
+        });
+        if (!foundInRange) {
+          add = false;
+        }
+      });
+      if (add) {
+        selection.push(car);
+      }
+    })
+
+    console.log("selection from pc");
+    console.log(selection);
+    console.log(this.selectionRanges)
+
+    this.carService.setMainBrushingSelection(selection);
+
+  }
+
+
 
 }

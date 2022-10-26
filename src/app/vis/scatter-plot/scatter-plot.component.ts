@@ -28,7 +28,10 @@ export class ScatterPlotComponent implements OnInit {
       this.drawPlot();
     });
 
-    this.elRef.nativeElement.querySelector('#scatterplot').addEventListener('plotly_selected', this.onDataSelected.bind(this));
+    this.carService.mainBrushingSelection.subscribe(cars => {
+      this.data = cars;
+      this.drawPlot();
+    });
   }
 
   drawPlot() {
@@ -63,8 +66,9 @@ export class ScatterPlotComponent implements OnInit {
         data.push(trace);
       })
 
-
     }
+
+    console.log(data);
 
     var layout = {
       xaxis: {
@@ -78,30 +82,45 @@ export class ScatterPlotComponent implements OnInit {
       title: this.title
     };
 
+    var config = {responsive: true}
 
-    Plotly.newPlot('scatterplot', data, layout);
 
+    Plotly.newPlot('scatterplot', data, layout, config);
+
+    (document.getElementById('scatterplot') as any).on('plotly_hover', this.onDataHovering.bind(this));
+    (document.getElementById('scatterplot') as any).on('plotly_selected', this.onDataBrushing.bind(this));
   }
 
-  onDataSelected(event:any) {
-    var x : any = [];
-    var y : any = [];
+  onDataBrushing(event:any) {
 
-    console.log("Here i am")
+    var selection: Car[] = [];
 
-    console.log(event.points)
-    event.points.forEach((pt: { x: any; y: any; }) => {
-      x.push(pt.x);
-      y.push(pt.y);
+    if (event == undefined) {
+      this.carService.resetBrushingSelection();
+      return;
+    }
+
+    event.points.forEach((point: { x: string | number; y: string | number; }) => {
+      this.data
+        .filter(car => car[this.xAttribute as keyof Car] == point.x && car[this.yAttribute as keyof Car] == point.y)
+        .forEach(car => {
+          if (!selection.includes(car)) {
+            selection.push(car);
+          }
+        });
     });
 
+    this.carService.setBrushingSelection(selection);
 
-    // Plotly.restyle(graphDiv, {
-    //   x: [x, y],
-    //   xbins: {}
-    // }, [1, 2]);
-
-    // Plotly.restyle(graphDiv, 'marker.color', [colors], [0]);
   }
+
+  onDataHovering(event:any) {
+    this.carService.selectCar(
+      this.data
+        .filter(car => car[this.xAttribute as keyof Car] == event.points[0].x && car[this.yAttribute as keyof Car] == event.points[0].y)[0]
+    );
+  }
+
+
 
 }

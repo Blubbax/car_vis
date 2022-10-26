@@ -13,6 +13,8 @@ import { VisualizationComponent } from './components/visualization/visualization
 import { ParallelCoordinatesComponent } from './vis/parallel-coordinates/parallel-coordinates.component';
 import { CarComponent } from './components/car/car.component';
 import { RadarChartComponent } from './vis/radar-chart/radar-chart.component';
+import { RangesliderComponent } from './vis/rangeslider/rangeslider.component';
+import { AttributeExplorerComponent } from './vis/attribute-explorer/attribute-explorer.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { RadarChartComponent } from './vis/radar-chart/radar-chart.component';
     VisualizationComponent,
     ParallelCoordinatesComponent,
     CarComponent,
-    RadarChartComponent
+    RadarChartComponent,
+    RangesliderComponent,
+    AttributeExplorerComponent
   ],
   imports: [
     BrowserModule,
