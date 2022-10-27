@@ -45,7 +45,7 @@ export class AttributeExplorerComponent implements OnInit {
       return add;
     });
 
-    this.carService.setBrushingSelection(selection);
+    this.carService.setAttributeExplorerSelection(selection);
 
   }
 

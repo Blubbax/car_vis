@@ -104,6 +104,7 @@ export class RangesliderComponent implements OnInit {
 
   onDataBrushing(event:any) {
 
+    console.log(event)
     var selection: Car[] = [];
 
     if (event == undefined) {
@@ -112,11 +113,15 @@ export class RangesliderComponent implements OnInit {
       return;
     }
 
-    var xAxisLeft = event["xaxis.range"][0];
-    var xAxisRight = event["xaxis.range"][1];
-    if (xAxisLeft == undefined) {
-      var xAxisLeft = event["xaxis.range[0]"];
-      var xAxisRight = event["xaxis.range[1]"];
+    var xAxisLeft: number;
+    var xAxisRight: number;
+
+    if (event["xaxis.range"] === undefined) {
+      xAxisLeft = event["xaxis.range[0]"];
+      xAxisRight = event["xaxis.range[1]"];
+    } else{
+      xAxisLeft = event["xaxis.range"][0];
+      xAxisRight = event["xaxis.range"][1];
     }
 
 

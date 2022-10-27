@@ -1,1 +1,7 @@
-<div id="parallel-coordinates"></div>
+<div class="container">
+  <app-attribute-selector (selectionEvent)="addAttribute($event)"></app-attribute-selector>
+  <div class="attributes">
+    <app-pill *ngFor="let attr of attributes" [name]="attr" (deleteEvent)="removeAttribute(attr)"></app-pill>
+  </div>
+  <div id="parallel-coordinates"></div>
+</div>

@@ -15,6 +15,7 @@ export class ParallelCoordinatesComponent implements OnInit {
   @Input() attributes : string[] = [];
   private data : Car[] = [];
   private selectionRanges = new Map();
+  private categoricalAxes = new Map();
 
   constructor(private carService:CarService) { }
 
@@ -25,7 +26,7 @@ export class ParallelCoordinatesComponent implements OnInit {
       this.drawPlot();
     });
 
-    this.carService.brushingSelection.subscribe(cars => {
+    this.carService.attributeExplorerSelection.subscribe(cars => {
       this.data = cars;
       this.drawPlot();
       var timer = window.setTimeout(function(){ }, 700);
@@ -34,15 +35,35 @@ export class ParallelCoordinatesComponent implements OnInit {
   }
 
   drawPlot() {
-    var dimensions: { label: string; values: (string | number)[]; }[]= [];
+    var dimensions: ({ label: string; values: (string | number)[] } | { label: string; values: (number | undefined)[], tickvals: any, ticktext: any })[] = [];
     this.attributes.forEach(attribute => {
       var data = this.data.map(x => x[attribute as keyof Car]);
-      dimensions.push({
+      var uniqueVals = this.carService.getUniqueVals(attribute);
+      if (uniqueVals.size == 0) {
+        // quantitative values
+        dimensions.push({
+          label: attribute,
+          values: data
+        });
+      } else {
+        // categorical values
+        var categoricalData = data.map(element => {
+          var key: String = new String(element);
+          return uniqueVals.get(key.toString());
+        });
 
-        label: attribute,
-        values: data
-      });
-    })
+        this.categoricalAxes.set(attribute, uniqueVals);
+
+        dimensions.push({
+          label: attribute,
+          values: categoricalData,
+          tickvals: Array.from(uniqueVals.values()),
+          ticktext: Array.from(uniqueVals.keys())
+        });
+
+      }
+
+    });
 
 
     var trace = {
@@ -50,7 +71,6 @@ export class ParallelCoordinatesComponent implements OnInit {
       line: {
         color: 'blue'
       },
-
       dimensions: dimensions
     };
 
@@ -66,6 +86,7 @@ export class ParallelCoordinatesComponent implements OnInit {
     (document.getElementById('parallel-coordinates') as any).on('plotly_restyle', this.onDataBrushing.bind(this));
     (document.getElementById('parallel-coordinates') as any).on('plotly_doubleclick', this.onDataBrushing.bind(this));
 
+    this.carService.setParallelCoordinatesSelection(this.data);
   }
 
 
@@ -82,7 +103,11 @@ export class ParallelCoordinatesComponent implements OnInit {
         if (event[0]['dimensions[' + index + '].constraintrange'] !== undefined) {
           attribute = attr;
           eventData = event[0]['dimensions[' + index + '].constraintrange'];
-          this.selectionRanges.set(attr, eventData);
+          if ( Array.isArray(eventData[0][0]) ) { // more than one range selected
+            this.selectionRanges.set(attr, eventData[0]);
+          } else {
+            this.selectionRanges.set(attr, eventData);
+          }
         }
       }
     });
@@ -93,11 +118,26 @@ export class ParallelCoordinatesComponent implements OnInit {
       var add = true;
       this.selectionRanges.forEach((ranges, attr) => {
         var foundInRange = false;
-        ranges.forEach((range: number[]) => {
-          if (car[attr as keyof Car] >= range[0] && car[attr as keyof Car] <= range[1]) {
-            foundInRange = true;
-          }
-        });
+
+        if (this.categoricalAxes.has(attr)) {
+          // categorical
+
+          var uniqueValues = this.categoricalAxes.get(attr);
+          ranges.forEach((range: number[]) => {
+            if ( uniqueValues.get(car[attr as keyof Car]) >= range[0] && uniqueValues.get(car[attr as keyof Car]) <= range[1]) {
+              foundInRange = true;
+            }
+          });
+
+        } else {
+          // quantitative
+          ranges.forEach((range: number[]) => {
+            if (car[attr as keyof Car] >= range[0] && car[attr as keyof Car] <= range[1]) {
+              foundInRange = true;
+            }
+          });
+        }
+
         if (!foundInRange) {
           add = false;
         }
@@ -105,16 +145,22 @@ export class ParallelCoordinatesComponent implements OnInit {
       if (add) {
         selection.push(car);
       }
+
     })
 
-    console.log("selection from pc");
-    console.log(selection);
-    console.log(this.selectionRanges)
-
-    this.carService.setMainBrushingSelection(selection);
+    this.carService.setParallelCoordinatesSelection(selection);
 
   }
 
+  addAttribute(attr: String) {
+    this.attributes.push(attr.toString());
+    this.drawPlot();
+  }
+
+  removeAttribute(event: string) {
+    this.attributes = this.attributes.filter(attribute => attribute !== event);
+    this.drawPlot();
+  }
 
 
 }

@@ -4,7 +4,7 @@
       <div class="cell" *ngFor="let attribute of attributes" (click)="sort(attribute)">{{ attribute }}</div>
     </div>
     <div class="content">
-      <div class="row" *ngFor="let car of data" (click)="selectCar(car)">
+      <div class="row" *ngFor="let car of data" (click)="selectCar(car)" [ngClass]="car === selectedCar ? 'selected':'' ">
         <div class="cell" *ngFor="let attribute of attributes">
           {{ getAttributeOfCar(car, attribute) }}
         </div>

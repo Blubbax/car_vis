@@ -1,0 +1,6 @@
+<div class="container">
+  <select name="attributes" #attributes (change)="changeSelection(attributes.value)">
+    <option *ngFor="let attr of carService.attributes" [value]="attr">{{attr}}</option>
+  </select>
+  <button (click)="selectAttribute()">Add</button>
+</div>

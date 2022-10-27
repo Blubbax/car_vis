@@ -13,22 +13,22 @@ export class TableComponent implements OnInit {
   @Input() attributes : string[] = [];
 
   private currentSortAttribute : string = '';
+  public selectedCar : Car | undefined;
 
   constructor(private carService:CarService) { }
 
   ngOnInit(): void {
-    this.carService.cars.subscribe(cars => {
+    this.carService.parallelCoordinatesSelection.subscribe(cars => {
       this.data = cars;
     });
 
-    this.carService.brushingSelection.subscribe(cars => {
+    this.carService.scatterPlotSelection.subscribe(cars => {
       this.data = cars;
+    });
+
+    this.carService.selectedCar.subscribe(car => {
+      this.selectedCar = car;
     })
-
-    this.carService.mainBrushingSelection.subscribe(cars => {
-      this.data = cars;
-    });
-
   }
 
   getAttributeOfCar(car:Car, attribute:string) : any {

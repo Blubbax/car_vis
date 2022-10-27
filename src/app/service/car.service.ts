@@ -8,17 +8,25 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 })
 export class CarService {
 
+    // Inital car data table
     public cars: Observable<Car[]>;
     private carsSubject: BehaviorSubject<any>;
     private carRawData: Car[] = [];
     private carDataTable: Car[] = [];
 
-    public brushingSelection: Observable<Car[]>;
-    private brushingSelectionSubject: BehaviorSubject<any>;
+    public attributes: string[] = ['riskFactor', 'normalizedLosses', 'make', 'fuelType', 'aspiration', 'numOfDoors', 'bodyStyle', 'driveWheels', 'engineLocation', 'wheelBase', 'length', 'width', 'height', 'curbWeight', 'engineType', 'numOfCylinders', 'engineSize', 'fuelSystem', 'bore', 'stroke', 'compressionRatio', 'horsepower', 'peakRpm', 'cityMpg', 'highwayMpg', 'price'];
 
-    public mainBrushingSelection: Observable<Car[]>;
-    private mainBrushingSelectionSubject: BehaviorSubject<any>;
+    // Data Tables for different visualization stages
+    public attributeExplorerSelection: Observable<Car[]>;
+    private attributeExplorerSelectionSubject: BehaviorSubject<any>;
 
+    public parallelCoordinatesSelection: Observable<Car[]>;
+    private parallelCoordinatesSelectionSubject: BehaviorSubject<any>;
+
+    public scatterPlotSelection: Observable<Car[]>;
+    private scatterPlotSelectionSubject: BehaviorSubject<any>;
+
+    // Hovered/Selected Car
     public selectedCar: Observable<Car>;
     private selectedCarSubject: BehaviorSubject<any>;
 
@@ -30,11 +38,15 @@ export class CarService {
         this.selectedCarSubject = new BehaviorSubject<Car | undefined>(undefined);
         this.selectedCar = this.selectedCarSubject.asObservable();
 
-        this.brushingSelectionSubject = new BehaviorSubject<Car[]>([]);
-        this.brushingSelection = this.brushingSelectionSubject.asObservable();
+        this.attributeExplorerSelectionSubject = new BehaviorSubject<Car[]>([]);
+        this.attributeExplorerSelection = this.attributeExplorerSelectionSubject.asObservable();
 
-        this.mainBrushingSelectionSubject = new BehaviorSubject<Car[]>([]);
-        this.mainBrushingSelection = this.mainBrushingSelectionSubject.asObservable();
+        this.parallelCoordinatesSelectionSubject = new BehaviorSubject<Car[]>([]);
+        this.parallelCoordinatesSelection = this.parallelCoordinatesSelectionSubject.asObservable();
+
+        this.scatterPlotSelectionSubject = new BehaviorSubject<Car[]>([]);
+        this.scatterPlotSelection = this.scatterPlotSelectionSubject.asObservable();
+
 
         const headers = new HttpHeaders({
             Accept: 'text/csv',
@@ -43,7 +55,10 @@ export class CarService {
         this.httpClient.get<any>('assets/cars.csv', { headers, responseType: 'text' as any })
             .subscribe(result => {
                 var dataObjects = result.split('\n');
+
+                // filter attributes
                 dataObjects.splice(0, 1);
+
                 dataObjects.forEach((carString: string) => {
                     const carData = carString.split(',');
                     const car: Car = {
@@ -85,6 +100,21 @@ export class CarService {
 
     }
 
+
+    getUniqueVals(attribute: String): Map<String, number> {
+      if (typeof this.carDataTable[0][attribute as keyof Car] === typeof "") {
+        var values = this.carDataTable.map(car => car[attribute as keyof Car])
+        values = values.sort();
+        var uniqueValues = new Set(values);
+        var map = new Map();
+        var index = 0;
+        uniqueValues.forEach((element) => map.set(element, index++));
+        return map;
+      }
+      return new Map();
+    }
+
+
     getRange(attribute: string) {
       // TODO does this work???
         // https://stackoverflow.com/questions/60330781/how-to-get-lowest-value-from-an-element-in-array-angular
@@ -97,16 +127,40 @@ export class CarService {
       this.selectedCarSubject.next(car);
     }
 
-    setBrushingSelection(cars: Car[]) {
-      this.brushingSelectionSubject.next(cars);
+
+
+
+
+
+    // Selections from attribbute explorer
+    setAttributeExplorerSelection(cars: Car[]) {
+      this.attributeExplorerSelectionSubject.next(cars);
     }
 
-    setMainBrushingSelection(cars: Car[]) {
-      this.mainBrushingSelectionSubject.next(cars);
+    resetAttributeExplorerSelection() {
+      this.attributeExplorerSelectionSubject.next(this.carDataTable);
     }
 
-    resetBrushingSelection() {
-      this.brushingSelectionSubject.next(this.carDataTable);
+    // Selections from parallel coordinates
+    setParallelCoordinatesSelection(cars: Car[]) {
+      this.parallelCoordinatesSelectionSubject.next(cars);
     }
+
+    resetParallelCoordinatesSelection() {
+      this.parallelCoordinatesSelectionSubject.next(this.carDataTable);
+    }
+
+
+    // Selections from scatter plot
+    setScatterPlotSelection(cars: Car[]) {
+      this.scatterPlotSelectionSubject.next(cars);
+    }
+
+    resetScatterPlotSelection() {
+      this.scatterPlotSelectionSubject.next(this.carDataTable);
+    }
+
+
+
 
 }

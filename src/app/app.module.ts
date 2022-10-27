@@ -15,6 +15,8 @@ import { CarComponent } from './components/car/car.component';
 import { RadarChartComponent } from './vis/radar-chart/radar-chart.component';
 import { RangesliderComponent } from './vis/rangeslider/rangeslider.component';
 import { AttributeExplorerComponent } from './vis/attribute-explorer/attribute-explorer.component';
+import { PillComponent } from './helper/pill/pill.component';
+import { AttributeSelectorComponent } from './helper/attribute-selector/attribute-selector.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { AttributeExplorerComponent } from './vis/attribute-explorer/attribute-e
     CarComponent,
     RadarChartComponent,
     RangesliderComponent,
-    AttributeExplorerComponent
+    AttributeExplorerComponent,
+    PillComponent,
+    AttributeSelectorComponent
   ],
   imports: [
     BrowserModule,

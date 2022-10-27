@@ -7,13 +7,14 @@
       <app-histogram [attribute]="'cityMpg'"></app-histogram>
       <app-histogram [attribute]="'highwayMpg'"></app-histogram>
     </div> -->
-    <app-attribute-explorer [attributes]="['horsepower', 'highwayMpg', 'price']"></app-attribute-explorer>
+    <app-attribute-explorer [attributes]="['horsepower', 'highwayMpg', 'price', 'make']"></app-attribute-explorer>
   </div>
 
   <div class="center">
-    <app-parallel-coordinates [attributes]="['horsepower', 'highwayMpg', 'price', 'peakRpm']"></app-parallel-coordinates>
+    <app-parallel-coordinates [attributes]="['horsepower', 'highwayMpg', 'cityMpg', 'price', 'peakRpm', 'driveWheels', 'make', 'fuelType']"></app-parallel-coordinates>
     <app-scatter-plot [xAttribute]="'horsepower'" [yAttribute]="'cityMpg'" [categoricalAttribute]="'make'"></app-scatter-plot>
-    <app-table [attributes]="['make', 'horsepower', 'highwayMpg', 'price']"></app-table>
+    <app-scatter-plot [xAttribute]="'horsepower'" [yAttribute]="'cityMpg'" ></app-scatter-plot>
+    <app-table [attributes]="['make', 'horsepower', 'highwayMpg', 'cityMpg', 'price']"></app-table>
   </div>
 
   <div class="right">

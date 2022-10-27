@@ -6,8 +6,6 @@
   width: 100%;
   padding: 20px;
 
-
-
   .table {
 
     .row {
@@ -23,14 +21,19 @@
         padding: 10px;
       }
 
+
+
+      &.row:hover {
+        background: $color-highlight;
+      }
     }
 
     .row:nth-child(even) {
       background: $color-text-light;
     }
 
-    .row:hover {
-      background: $color-highlight;
+    .row.selected {
+      background-color: $color-highlight;
     }
 
     .header {
