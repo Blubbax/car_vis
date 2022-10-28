@@ -1,16 +1,17 @@
-<div class="container">
+<div class="view-container">
 
-  <h1>{{ car?.make }}</h1>
+  <h1>Details</h1>
 
-  <ul>
-    <li>FuleType: {{car?.fuelType}}</li>
-    <li>Aspiration: {{car?.aspiration}}</li>
-    <li>bodyStyle: {{car?.bodyStyle}}</li>
-    <li>driveWheels: {{car?.driveWheels}}</li>
-    <li>cityMpg: {{car?.cityMpg}}</li>
-    <li>highwayMpg: {{car?.highwayMpg}}</li>
-    <li>horsepower: {{car?.horsepower}}</li>
-  </ul>
+  <p *ngIf="car === undefined">
+    Select or hover over a car in the scatter plot or the table to see some details
+  </p>
+
+  <table *ngIf="car !== undefined">
+    <tr *ngFor="let attr of attributes">
+      <td>{{attr}}:</td>
+      <td>{{getAttributeValue(attr)}}</td>
+    </tr>
+  </table>
 
   <!-- <app-radar-chart [car]="car" [attributes]="['horsepower', 'cityMpg', 'highwayMpg']"></app-radar-chart> -->
 

@@ -35,7 +35,7 @@ export class ParallelCoordinatesComponent implements OnInit {
   }
 
   drawPlot() {
-    var dimensions: ({ label: string; values: (string | number)[] } | { label: string; values: (number | undefined)[], tickvals: any, ticktext: any })[] = [];
+    var dimensions: { label: string; values: (string | number)[] | (number | undefined)[]; autorange: boolean; tickvals?: number[]; ticktext?: String[]; }[] = [];
     this.attributes.forEach(attribute => {
       var data = this.data.map(x => x[attribute as keyof Car]);
       var uniqueVals = this.carService.getUniqueVals(attribute);
@@ -43,7 +43,8 @@ export class ParallelCoordinatesComponent implements OnInit {
         // quantitative values
         dimensions.push({
           label: attribute,
-          values: data
+          values: data,
+          autorange: true
         });
       } else {
         // categorical values
@@ -54,11 +55,22 @@ export class ParallelCoordinatesComponent implements OnInit {
 
         this.categoricalAxes.set(attribute, uniqueVals);
 
+        var values: number[] = [];
+        var labels: String[] = [];
+
+        uniqueVals.forEach((value, key) => {
+          if (categoricalData.includes(value)) {
+            values.push(value);
+            labels.push(key);
+          }
+        });
+
         dimensions.push({
           label: attribute,
+          autorange: true,
           values: categoricalData,
-          tickvals: Array.from(uniqueVals.values()),
-          ticktext: Array.from(uniqueVals.keys())
+          tickvals: values,
+          ticktext: labels
         });
 
       }
@@ -69,7 +81,7 @@ export class ParallelCoordinatesComponent implements OnInit {
     var trace = {
       type: 'parcoords',
       line: {
-        color: 'blue'
+        // color: 'blue'
       },
       dimensions: dimensions
     };

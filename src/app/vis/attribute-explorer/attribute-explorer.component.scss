@@ -1,0 +1,11 @@
+.view-container {
+  margin: 0;
+
+  .slider {
+    margin-bottom: 20px;
+  }
+
+  .slider:last-child {
+    margin-bottom: 0;
+  }
+}

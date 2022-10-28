@@ -10,6 +10,7 @@ export class AttributeDropdownComponent implements OnInit {
 
   @Input() defaultAttribute: string = '';
   @Input() emptyAllowed: boolean = false;
+  @Input() categorical: boolean = false;
   @Input() title: string = '';
   @Output() attributeChangeEvent = new EventEmitter<string>();
 
@@ -20,6 +21,13 @@ export class AttributeDropdownComponent implements OnInit {
 
   changeSelection(attribute: string) {
     this.attributeChangeEvent.emit(attribute);
+  }
+
+  getAttributes() {
+    if (this.categorical) {
+      return this.carService.categoricalAttributes;
+    }
+    return this.carService.attributes;
   }
 
 }

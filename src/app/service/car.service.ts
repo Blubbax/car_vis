@@ -15,6 +15,7 @@ export class CarService {
     private carDataTable: Car[] = [];
 
     public attributes: string[] = ['riskFactor', 'normalizedLosses', 'make', 'fuelType', 'aspiration', 'numOfDoors', 'bodyStyle', 'driveWheels', 'engineLocation', 'wheelBase', 'length', 'width', 'height', 'curbWeight', 'engineType', 'numOfCylinders', 'engineSize', 'fuelSystem', 'bore', 'stroke', 'compressionRatio', 'horsepower', 'peakRpm', 'cityMpg', 'highwayMpg', 'price'];
+    public categoricalAttributes: string[] = ['make', 'fuelType', 'aspiration', 'bodyStyle', 'driveWheels', 'engineLocation', 'engineType', 'fuelSystem'] ;
 
     // Data Tables for different visualization stages
     public attributeExplorerSelection: Observable<Car[]>;

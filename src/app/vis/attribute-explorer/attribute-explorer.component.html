@@ -1,3 +1,5 @@
-<div class="container">
-  <app-rangeslider *ngFor="let attr of attributes" [attribute]="attr" (selectionEvent)="onSelection($event, attr)"></app-rangeslider>
+<div class="view-container">
+  <div class="slider" *ngFor="let attr of attributes">
+    <app-rangeslider [attribute]="attr" (selectionEvent)="onSelection($event, attr)"></app-rangeslider>
+  </div>
 </div>
