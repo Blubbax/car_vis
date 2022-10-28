@@ -1,0 +1,9 @@
+<div>
+  <span>
+    {{title}}:
+  </span>
+  <select name="attributes" #attributes (change)="changeSelection(attributes.value)">
+    <option *ngIf="emptyAllowed" value="">no attribute selected</option>
+    <option *ngFor="let attr of carService.attributes" [value]="attr"  [defaultSelected]="attr === defaultAttribute">{{attr}}</option>
+  </select>
+</div>

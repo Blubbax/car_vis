@@ -8,6 +8,8 @@
 
   .table {
 
+    background-color: $color-background;
+
     .row {
       display: flex;
       height: 50px;
@@ -51,4 +53,10 @@
 
 
   }
+}
+
+.attributes {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
 }

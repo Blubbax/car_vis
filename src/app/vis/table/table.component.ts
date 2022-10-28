@@ -57,4 +57,14 @@ export class TableComponent implements OnInit {
 
   }
 
+
+  addAttribute(attr: String) {
+    this.attributes.push(attr.toString());
+  }
+
+  removeAttribute(event: string) {
+    this.attributes = this.attributes.filter(attribute => attribute !== event);
+  }
+
+
 }

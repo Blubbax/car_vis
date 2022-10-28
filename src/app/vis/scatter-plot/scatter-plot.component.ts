@@ -96,6 +96,9 @@ export class ScatterPlotComponent implements OnInit {
 
     Plotly.newPlot('scatterplot', data, layout, config);
 
+    this.carService.setScatterPlotSelection(this.data);
+
+
     (document.getElementById('scatterplot') as any).on('plotly_hover', this.onDataHovering.bind(this));
     (document.getElementById('scatterplot') as any).on('plotly_selected', this.onDataBrushing.bind(this));
     (document.getElementById('scatterplot') as any).on('plotly_deselect', this.onDataBrushingReset.bind(this));
@@ -108,7 +111,7 @@ export class ScatterPlotComponent implements OnInit {
     var selection: Car[] = [];
 
     if (event == undefined) {
-      this.carService.resetScatterPlotSelection();
+      this.carService.setScatterPlotSelection(this.data);
       return;
     }
 
@@ -204,6 +207,22 @@ export class ScatterPlotComponent implements OnInit {
 
     this.carService.setScatterPlotSelection(selection);
 
+  }
+
+
+  changeXaxis(attrtibute: string) {
+    this.xAttribute = attrtibute;
+    this.drawPlot();
+  }
+
+  changeYaxis(attribute: string) {
+    this.yAttribute = attribute;
+    this.drawPlot();
+  }
+
+  changeCategoricalAxis(attribute: string) {
+    this.categoricalAttribute = attribute;
+    this.drawPlot();
   }
 
 

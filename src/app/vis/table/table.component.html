@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container view-container">
   <div class="table">
     <div class="row header">
       <div class="cell" *ngFor="let attribute of attributes" (click)="sort(attribute)">{{ attribute }}</div>
@@ -9,6 +9,12 @@
           {{ getAttributeOfCar(car, attribute) }}
         </div>
       </div>
+    </div>
+  </div>
+  <div class="controls-container">
+    <app-attribute-selector (selectionEvent)="addAttribute($event)"></app-attribute-selector>
+    <div class="attributes">
+      <app-pill *ngFor="let attr of attributes" [name]="attr" (deleteEvent)="removeAttribute(attr)"></app-pill>
     </div>
   </div>
 </div>

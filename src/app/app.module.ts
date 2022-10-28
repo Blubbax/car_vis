@@ -17,6 +17,7 @@ import { RangesliderComponent } from './vis/rangeslider/rangeslider.component';
 import { AttributeExplorerComponent } from './vis/attribute-explorer/attribute-explorer.component';
 import { PillComponent } from './helper/pill/pill.component';
 import { AttributeSelectorComponent } from './helper/attribute-selector/attribute-selector.component';
+import { AttributeDropdownComponent } from './helper/attribute-dropdown/attribute-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { AttributeSelectorComponent } from './helper/attribute-selector/attribut
     RangesliderComponent,
     AttributeExplorerComponent,
     PillComponent,
-    AttributeSelectorComponent
+    AttributeSelectorComponent,
+    AttributeDropdownComponent
   ],
   imports: [
     BrowserModule,
