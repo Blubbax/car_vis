@@ -9,7 +9,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class AttributeExplorerComponent implements OnInit {
 
-  @Input() attributes: String[] = [];
+  @Input() attributes: string[] = [];
 
   public data: Car[] = [];
   private sliderSelections = new Map();
@@ -28,8 +28,11 @@ export class AttributeExplorerComponent implements OnInit {
 
   onSelection(selection: Car[], source: String) {
     this.sliderSelections.set(source, selection);
+    this.selectCars();
+  }
 
-    selection = this.data.filter(car => {
+  selectCars(): void {
+    var selection = this.data.filter(car => {
       var add = true;
       this.sliderSelections.forEach((selection: Car[], key) => {
         var found = false
@@ -46,7 +49,16 @@ export class AttributeExplorerComponent implements OnInit {
     });
 
     this.carService.setAttributeExplorerSelection(selection);
+  }
 
+  addAttribute(attr: String) {
+    this.attributes.push(attr.toString());
+  }
+
+  removeAttribute(event: string) {
+    this.attributes = this.attributes.filter(attribute => attribute !== event);
+    this.sliderSelections.delete(event);
+    this.selectCars();
   }
 
 }

@@ -1,5 +1,5 @@
 import { Car } from './../../model/car';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-car',
@@ -10,6 +10,9 @@ export class CarComponent implements OnInit {
 
   @Input() car : Car | undefined;
   @Input() attributes : string[] = [];
+  @Output() toggleDetailsEvent = new EventEmitter();
+
+  public detailsVisisble = false;
 
   constructor() { }
 
@@ -21,6 +24,11 @@ export class CarComponent implements OnInit {
       return this.car[attribute as keyof Car];
     }
     return "";
+  }
+
+  toggleDetails() {
+    this.detailsVisisble = !this.detailsVisisble;
+    this.toggleDetailsEvent.emit();
   }
 
 }

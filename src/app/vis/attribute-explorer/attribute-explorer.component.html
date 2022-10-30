@@ -2,4 +2,10 @@
   <div class="slider" *ngFor="let attr of attributes">
     <app-rangeslider [attribute]="attr" (selectionEvent)="onSelection($event, attr)"></app-rangeslider>
   </div>
+  <div class="controls-container">
+    <app-attribute-selector (selectionEvent)="addAttribute($event)"></app-attribute-selector>
+    <div class="attributes">
+      <app-pill *ngFor="let attr of attributes" [name]="attr" (deleteEvent)="removeAttribute(attr)"></app-pill>
+    </div>
+  </div>
 </div>

@@ -21,10 +21,11 @@ export class ScatterPlotComponent implements OnInit {
   private selectedCategories: Set<string|number> = new Set();
 
   private selectedCar: Car|undefined;
+  private cntTraces = 0;
+  private attributeTraces = 0;
 
   constructor(
-    private carService:CarService,
-    private elRef:ElementRef) { }
+    private carService:CarService) { }
 
   ngOnInit(): void {
     this.carService.parallelCoordinatesSelection.subscribe(cars => {
@@ -33,13 +34,22 @@ export class ScatterPlotComponent implements OnInit {
     });
 
     this.carService.selectedCar.subscribe(car => {
+
       this.selectedCar = car;
-    })
+      console.log(car)
+      if (car !== undefined) {
+          this.setSelection();
+      } else {
+        this.removeSelection();
+      }
+      var timer = window.setTimeout(function(){ }, 20);
+    });
   }
 
   drawPlot() {
 
     var data = [];
+    this.cntTraces = 0;
 
     if (this.categoricalAttribute == '') {
       var trace1 = {
@@ -47,9 +57,11 @@ export class ScatterPlotComponent implements OnInit {
         y: this.data.map(x => x[this.yAttribute as keyof Car]),
         mode: 'markers',
         type: 'scatter',
+        name: 'Data',
         marker: { size: 12 }
       };
       data.push(trace1);
+      this.cntTraces += 1;
     } else {
 
       this.categories = new Set(this.data.map(car => car[this.categoricalAttribute as keyof Car]));
@@ -69,12 +81,14 @@ export class ScatterPlotComponent implements OnInit {
           name: value,
           marker: { size: 12 }
         };
+        this.cntTraces += 1;
         data.push(trace);
       })
 
     }
 
-    console.log(data);
+    this.attributeTraces = this.cntTraces;
+
 
     var layout = {
       xaxis: {
@@ -92,7 +106,6 @@ export class ScatterPlotComponent implements OnInit {
     };
 
     var config = {responsive: true}
-
 
     Plotly.newPlot('scatterplot', data, layout, config);
 
@@ -136,26 +149,22 @@ export class ScatterPlotComponent implements OnInit {
         });
     });
 
-    console.log("scatter selection")
-    console.log(selection)
     this.carService.setScatterPlotSelection(selection);
 
   }
 
   onDataHovering(event:any) {
-    this.carService.selectCar(
-      this.data
-        .filter(car => car[this.xAttribute as keyof Car] == event.points[0].x && car[this.yAttribute as keyof Car] == event.points[0].y)[0]
-    );
+    var car = this.data
+      .filter(car => car[this.xAttribute as keyof Car] == event.points[0].x && car[this.yAttribute as keyof Car] == event.points[0].y)[0];
+
+    if (car != this.selectedCar)
+      this.carService.selectCar(car);
   }
 
   onDataBrushingReset(event: any) {
-    console.log(event);
     if (this.categoricalAttribute != "") {
-      console.log("reset A")
       this.filterLegendSelection();
     } else {
-      console.log("reset B")
       this.carService.setScatterPlotSelection(this.data);
     }
   }
@@ -225,5 +234,42 @@ export class ScatterPlotComponent implements OnInit {
     this.drawPlot();
   }
 
+
+  setSelection() {
+
+    this.removeSelection();
+
+    if (this.selectedCar !== undefined) {
+      var trace = {
+        x: [this.selectedCar[this.xAttribute as keyof Car]],
+        y: [this.selectedCar[this.yAttribute as keyof Car]],
+        mode: 'markers',
+        type: 'scatter',
+        name: 'Selection',
+        marker: { size: 20, color: 'red',
+          line: {
+            color: 'black',
+            width: 2
+          }
+        }
+      };
+
+      this.cntTraces += 1;
+      Plotly.addTraces('scatterplot', [trace]);
+    }
+  }
+
+  removeSelection() {
+    console.log("before");
+    console.log(this.cntTraces + "   " + this.attributeTraces);
+    while (this.cntTraces > this.attributeTraces &&  this.cntTraces > 1) {
+      this.cntTraces -= 1;
+      Plotly.deleteTraces('scatterplot', -1);
+      console.log("remove selection")
+    }
+    console.log("after");
+    console.log(this.cntTraces + "   " + this.attributeTraces);
+
+  }
 
 }

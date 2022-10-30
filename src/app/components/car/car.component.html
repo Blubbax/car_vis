@@ -1,4 +1,9 @@
-<div class="view-container">
+<div class="view-container details" *ngIf="detailsVisisble">
+  <span (click)="toggleDetails()" class="close-view">
+    <span class="material-symbols-outlined">
+      close
+    </span>
+  </span>
 
   <h1>Details</h1>
 
@@ -14,6 +19,12 @@
   </table>
 
   <!-- <app-radar-chart [car]="car" [attributes]="['horsepower', 'cityMpg', 'highwayMpg']"></app-radar-chart> -->
+</div>
 
-
+<div class="view-container" *ngIf="!detailsVisisble">
+  <span (click)="toggleDetails()">
+    <span class="material-symbols-outlined">
+      directions_car
+    </span>
+  </span>
 </div>

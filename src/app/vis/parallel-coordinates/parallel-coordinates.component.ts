@@ -17,6 +17,8 @@ export class ParallelCoordinatesComponent implements OnInit {
   private selectionRanges = new Map();
   private categoricalAxes = new Map();
 
+  private selection: Car[] = [];
+
   constructor(private carService:CarService) { }
 
   ngOnInit(): void {
@@ -30,6 +32,11 @@ export class ParallelCoordinatesComponent implements OnInit {
       this.data = cars;
       this.drawPlot();
       var timer = window.setTimeout(function(){ }, 700);
+    })
+
+    this.carService.scatterPlotSelection.subscribe(cars => {
+      this.selection = cars;
+      this.setSelection();
     })
 
   }
@@ -173,6 +180,23 @@ export class ParallelCoordinatesComponent implements OnInit {
     this.attributes = this.attributes.filter(attribute => attribute !== event);
     this.drawPlot();
   }
+
+  setSelection() {
+    // var trace = {
+    //   type: 'parcoords',
+    //   line: {
+    //     color: 'red'
+    //   },
+    //   dimensions:
+    // };
+
+    // Plotly.addTraces('parallel-coordinates', trace);
+  }
+
+
+  // createDimensions(cars : Car[]) {
+
+  // }
 
 
 }

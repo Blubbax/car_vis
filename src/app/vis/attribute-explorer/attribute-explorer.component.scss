@@ -8,4 +8,11 @@
   .slider:last-child {
     margin-bottom: 0;
   }
+
+  .attributes {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
 }

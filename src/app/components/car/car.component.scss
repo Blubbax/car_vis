@@ -1,8 +1,24 @@
 .view-container {
   height: 100;
   margin: 0;
+  width: 60px;
+  position: relative;
+
+  &.details {
+    width: 300px;
+  }
+
+  .close-view {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
 
   h1 {
     margin: 0;
+  }
+
+  span {
+    cursor: pointer;
   }
 }

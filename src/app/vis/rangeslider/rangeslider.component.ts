@@ -20,15 +20,17 @@ export class RangesliderComponent implements OnInit {
   @Output() selectionEvent = new EventEmitter<Car[]>();
 
   constructor(private carService: CarService) {
+  }
+
+  ngOnInit(): void {
+  }
+
+  ngAfterViewInit() {
     this.carService.cars.subscribe(cars => {
       this.data = cars;
       this.drawSlider();
-    })
+    });
   }
-
-  ngOnInit(): void { }
-
-  ngOnChanges(changes: SimpleChanges) { }
 
   drawSlider() {
 
@@ -132,7 +134,10 @@ export class RangesliderComponent implements OnInit {
 
   onDataBrushing(event: any) {
 
-    console.log(event)
+    if (event["xaxis.autorange"] === true) {
+      return;
+    }
+
     var selection: Car[] = [];
 
     if (event == undefined) {
@@ -157,7 +162,6 @@ export class RangesliderComponent implements OnInit {
       var uniqueValues = this.categorical;
       this.data.forEach(car => {
         var value = uniqueValues.get(new String(car[this.attribute as keyof Car]).toString());
-        console.log(new String(car[this.attribute as keyof Car]));
         if (value !== undefined && value >= xAxisLeft && value <= xAxisRight) {
           selection.push(car);
         }
@@ -174,8 +178,6 @@ export class RangesliderComponent implements OnInit {
       });
     }
 
-    console.log("Sele")
-    console.log(selection)
     this.selectionEvent.emit(selection);
   }
 
