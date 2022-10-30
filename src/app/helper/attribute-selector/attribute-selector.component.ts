@@ -18,7 +18,6 @@ export class AttributeSelectorComponent implements OnInit {
 
   selectAttribute() {
     if (this.selection != '') {
-      console.log("submit " + this.selection)
       this.selectionEvent.emit(this.selection);
     }
   }
