@@ -119,7 +119,7 @@ export class RangesliderComponent implements OnInit {
 
     var plotData = [trace];
 
-    Plotly.newPlot('rangeslider' + this.attribute, plotData, layout);
+    Plotly.newPlot('rangeslider' + this.attribute, plotData, layout, {displayModeBar: false});
 
     // Thanks to https://stackoverflow.com/questions/40352171/plotly-rangeslider-how-to-determine-if-range-is-selected
     (document.getElementById('rangeslider' + this.attribute) as any).on('plotly_relayout', this.onDataBrushing.bind(this));

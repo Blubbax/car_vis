@@ -14,7 +14,7 @@ export class VisualizationComponent implements OnInit {
 
   public detailsVisible = true;
 
-  constructor(private carService : CarService) {
+  constructor(public carService : CarService) {
     this.carService.cars.subscribe(cars => {
       this.carData = cars;
     })

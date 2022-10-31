@@ -1,6 +1,7 @@
 import { Car } from './../../model/car';
 import { CarService } from './../../service/car.service';
 import { Component, OnInit, Input } from '@angular/core';
+import { create } from 'domain';
 
 declare const Plotly : any;
 
@@ -32,58 +33,15 @@ export class ParallelCoordinatesComponent implements OnInit {
       this.data = cars;
       this.drawPlot();
       var timer = window.setTimeout(function(){ }, 700);
-    })
-
-    this.carService.scatterPlotSelection.subscribe(cars => {
-      this.selection = cars;
-      this.setSelection();
-    })
+    });
 
   }
 
   drawPlot() {
-    var dimensions: { label: string; values: (string | number)[] | (number | undefined)[]; autorange: boolean; tickvals?: number[]; ticktext?: String[]; }[] = [];
-    this.attributes.forEach(attribute => {
-      var data = this.data.map(x => x[attribute as keyof Car]);
-      var uniqueVals = this.carService.getUniqueVals(attribute);
-      if (uniqueVals.size == 0) {
-        // quantitative values
-        dimensions.push({
-          label: attribute,
-          values: data,
-          autorange: true
-        });
-      } else {
-        // categorical values
-        var categoricalData = data.map(element => {
-          var key: String = new String(element);
-          return uniqueVals.get(key.toString());
-        });
 
-        this.categoricalAxes.set(attribute, uniqueVals);
-
-        var values: number[] = [];
-        var labels: String[] = [];
-
-        uniqueVals.forEach((value, key) => {
-          if (categoricalData.includes(value)) {
-            values.push(value);
-            labels.push(key);
-          }
-        });
-
-        dimensions.push({
-          label: attribute,
-          autorange: true,
-          values: categoricalData,
-          tickvals: values,
-          ticktext: labels
-        });
-
-      }
-
-    });
-
+    var dimensions = this.createDimensions(this.data);
+    console.log("dimensions");
+    console.log(dimensions);
 
     var trace = {
       type: 'parcoords',
@@ -181,22 +139,53 @@ export class ParallelCoordinatesComponent implements OnInit {
     this.drawPlot();
   }
 
-  setSelection() {
-    // var trace = {
-    //   type: 'parcoords',
-    //   line: {
-    //     color: 'red'
-    //   },
-    //   dimensions:
-    // };
 
-    // Plotly.addTraces('parallel-coordinates', trace);
+  createDimensions(cars : Car[]) {
+    var dimensions: { label: string; values: (string | number)[] | (number | undefined)[]; autorange: boolean; tickvals?: number[]; ticktext?: String[]; }[] = [];
+    this.attributes.forEach(attribute => {
+      var data = cars.map(x => x[attribute as keyof Car]);
+      var uniqueVals = this.carService.getUniqueVals(attribute);
+      if (uniqueVals.size == 0) {
+        // quantitative values
+        dimensions.push({
+          label: attribute,
+          values: data,
+          autorange: true
+        });
+      } else {
+        // categorical values
+        var categoricalData = data.map(element => {
+          var key: String = new String(element);
+          return uniqueVals.get(key.toString());
+        });
+
+        this.categoricalAxes.set(attribute, uniqueVals);
+
+        var values: number[] = [];
+        var labels: String[] = [];
+
+        uniqueVals.forEach((value, key) => {
+          if (categoricalData.includes(value)) {
+            values.push(value);
+            labels.push(key);
+          }
+        });
+
+        dimensions.push({
+          label: attribute,
+          autorange: true,
+          values: categoricalData,
+          tickvals: values,
+          ticktext: labels
+        });
+
+      }
+
+    });
+
+    return dimensions;
+
   }
-
-
-  // createDimensions(cars : Car[]) {
-
-  // }
 
 
 }

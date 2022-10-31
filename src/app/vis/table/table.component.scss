@@ -25,7 +25,11 @@
 
 
 
-      &.row:hover {
+    }
+
+    .content {
+
+      .row:hover {
         background: $color-highlight;
       }
     }
@@ -40,6 +44,7 @@
 
     .header {
       background: $color-primary;
+      cursor: pointer;
       .cell {
         font-weight: bold;
         color: $color-text-light;

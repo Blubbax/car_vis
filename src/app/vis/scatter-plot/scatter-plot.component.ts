@@ -24,8 +24,12 @@ export class ScatterPlotComponent implements OnInit {
   private cntTraces = 0;
   private attributeTraces = 0;
 
+  public viewId = 0;
+
   constructor(
-    private carService:CarService) { }
+    private carService:CarService) {
+      this.viewId = carService.getViewID();
+    }
 
   ngOnInit(): void {
     this.carService.parallelCoordinatesSelection.subscribe(cars => {
@@ -107,16 +111,20 @@ export class ScatterPlotComponent implements OnInit {
 
     var config = {responsive: true}
 
-    Plotly.newPlot('scatterplot', data, layout, config);
+    Plotly.newPlot('scatterplot'+this.viewId, data, layout, config);
 
     this.carService.setScatterPlotSelection(this.data);
 
+    if (this.selectedCar !== undefined) {
+      this.setSelection();
+    }
 
-    (document.getElementById('scatterplot') as any).on('plotly_hover', this.onDataHovering.bind(this));
-    (document.getElementById('scatterplot') as any).on('plotly_selected', this.onDataBrushing.bind(this));
-    (document.getElementById('scatterplot') as any).on('plotly_deselect', this.onDataBrushingReset.bind(this));
-    (document.getElementById('scatterplot') as any).on('plotly_legendclick', this.onLegendSelection.bind(this));
-    (document.getElementById('scatterplot') as any).on('plotly_legenddoubleclick', this.onLegendSelectionReset.bind(this));
+
+    (document.getElementById('scatterplot'+this.viewId) as any).on('plotly_hover', this.onDataHovering.bind(this));
+    (document.getElementById('scatterplot'+this.viewId) as any).on('plotly_selected', this.onDataBrushing.bind(this));
+    (document.getElementById('scatterplot'+this.viewId) as any).on('plotly_deselect', this.onDataBrushingReset.bind(this));
+    (document.getElementById('scatterplot'+this.viewId) as any).on('plotly_legendclick', this.onLegendSelection.bind(this));
+    (document.getElementById('scatterplot'+this.viewId) as any).on('plotly_legenddoubleclick', this.onLegendSelectionReset.bind(this));
   }
 
   onDataBrushing(event:any) {
@@ -255,7 +263,7 @@ export class ScatterPlotComponent implements OnInit {
       };
 
       this.cntTraces += 1;
-      Plotly.addTraces('scatterplot', [trace]);
+      Plotly.addTraces('scatterplot'+this.viewId, [trace]);
     }
   }
 
@@ -264,7 +272,7 @@ export class ScatterPlotComponent implements OnInit {
     console.log(this.cntTraces + "   " + this.attributeTraces);
     while (this.cntTraces > this.attributeTraces &&  this.cntTraces > 1) {
       this.cntTraces -= 1;
-      Plotly.deleteTraces('scatterplot', -1);
+      Plotly.deleteTraces('scatterplot'+this.viewId, -1);
       console.log("remove selection")
     }
     console.log("after");

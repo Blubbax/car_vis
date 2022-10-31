@@ -1,5 +1,5 @@
 <div class="view-container">
-  <div id="scatterplot"></div>
+  <div id="scatterplot{{viewId}}"></div>
   <div class="attribute-selectors controls-container">
     <app-attribute-dropdown [title]="'X Axis'" [defaultAttribute]="xAttribute" [emptyAllowed]="false" (attributeChangeEvent)="changeXaxis($event)"></app-attribute-dropdown>
     <app-attribute-dropdown [title]="'Y Axis'" [defaultAttribute]="yAttribute" [emptyAllowed]="false" (attributeChangeEvent)="changeYaxis($event)"></app-attribute-dropdown>

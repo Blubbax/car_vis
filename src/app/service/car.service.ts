@@ -14,7 +14,9 @@ export class CarService {
     private carRawData: Car[] = [];
     private carDataTable: Car[] = [];
 
-    public attributes: string[] = ['riskFactor', 'normalizedLosses', 'make', 'fuelType', 'aspiration', 'numOfDoors', 'bodyStyle', 'driveWheels', 'engineLocation', 'wheelBase', 'length', 'width', 'height', 'curbWeight', 'engineType', 'numOfCylinders', 'engineSize', 'fuelSystem', 'bore', 'stroke', 'compressionRatio', 'horsepower', 'peakRpm', 'cityMpg', 'highwayMpg', 'price'];
+    private viewid = 0;
+
+    public attributes: string[] = ['riskFactor', 'make', 'fuelType', 'aspiration', 'numOfDoors', 'bodyStyle', 'driveWheels', 'engineLocation', 'wheelBase', 'length', 'width', 'height', 'curbWeight', 'numOfCylinders', 'engineSize', 'fuelSystem', 'compressionRatio', 'horsepower', 'peakRpm', 'cityMpg', 'highwayMpg', 'price'];
     public categoricalAttributes: string[] = ['make', 'fuelType', 'aspiration', 'bodyStyle', 'driveWheels', 'engineLocation', 'engineType', 'fuelSystem'] ;
 
     // Data Tables for different visualization stages
@@ -62,38 +64,52 @@ export class CarService {
 
                 dataObjects.forEach((carString: string) => {
                     const carData = carString.split(',');
-                    const car: Car = {
-                        riskFactor: parseInt(carData[0]),
-                        normalizedLosses: parseInt(carData[1]),
-                        make: carData[2],
-                        fuelType: carData[3],
-                        aspiration: carData[4],
-                        numOfDoors: parseInt(carData[5]),
-                        bodyStyle: carData[6],
-                        driveWheels: carData[7],
-                        engineLocation: carData[8],
-                        wheelBase: parseInt(carData[9]),
-                        length: parseInt(carData[10]),
-                        width: parseInt(carData[11]),
-                        height: parseInt(carData[12]),
-                        curbWeight: parseInt(carData[13]),
-                        engineType: carData[14],
-                        numOfCylinders: parseInt(carData[15]),
-                        engineSize: parseInt(carData[16]),
-                        fuelSystem: carData[17],
-                        bore: parseInt(carData[18]),
-                        stroke: parseInt(carData[19]),
-                        compressionRatio: parseInt(carData[20]),
-                        horsepower: parseInt(carData[21]),
-                        peakRpm: parseInt(carData[22]),
-                        cityMpg: parseInt(carData[23]),
-                        highwayMpg: parseInt(carData[24]),
-                        price: parseInt(carData[25])
-                    };
 
-                    this.carRawData.push(car);
+                    // Filter when horesepower or price missing as these are two important attributes
+                    // and num of doors and cylinders as these has to be converted to a number
+                    if (((carData[21] !== undefined && carData[21].trim()) !== "?")
+                      && (carData[25] !== undefined && carData[25].trim() !== '?')
+                      && (carData[5] !== undefined && carData[5].trim() !== "?")
+                      && (carData[15] !== undefined && carData[15].trim() !== "?")) {
+
+                      const car: Car = {
+                          riskFactor: parseInt(carData[0]),
+                          //normalizedLosses: parseInt(carData[1]),
+                          make: carData[2],
+                          fuelType: carData[3],
+                          aspiration: carData[4],
+                          numOfDoors: this.numberStringToInt(carData[5]),
+                          bodyStyle: carData[6],
+                          driveWheels: carData[7],
+                          engineLocation: carData[8],
+                          wheelBase: parseInt(carData[9]),
+                          length: parseInt(carData[10]),
+                          width: parseInt(carData[11]),
+                          height: parseInt(carData[12]),
+                          curbWeight: parseInt(carData[13]),
+                          //engineType: carData[14],
+                          numOfCylinders: this.numberStringToInt(carData[15]),
+                          engineSize: parseInt(carData[16]),
+                          fuelSystem: carData[17],
+                          //bore: parseInt(carData[18]),
+                          //stroke: parseInt(carData[19]),
+                          compressionRatio: parseInt(carData[20]),
+                          horsepower: parseInt(carData[21]),
+                          peakRpm: parseInt(carData[22]),
+                          cityMpg: parseInt(carData[23]),
+                          highwayMpg: parseInt(carData[24]),
+                          price: parseInt(carData[25])
+                      };
+                      this.carRawData.push(car);
+
+                    } else {
+                      console.log("Filter" + carData[25])
+                    }
+
+
                 });
 
+                console.log("Have fun with cars: " + this.carRawData.length)
                 this.carRawData.pop(); // Last element not a real car
                 this.carDataTable = this.carRawData;
                 this.carsSubject.next(this.carDataTable);
@@ -160,6 +176,43 @@ export class CarService {
     resetScatterPlotSelection() {
       this.scatterPlotSelectionSubject.next(this.carDataTable);
     }
+
+    private numberStringToInt(numberString: string) : number {
+      switch (numberString) {
+        case "one":
+          return 1;
+        case "two":
+          return 2;
+        case "three":
+          return 3;
+        case "four":
+          return 4;
+        case "five":
+          return 5;
+        case "six":
+          return 6;
+        case "seven":
+          return 7;
+        case "eight":
+          return 8;
+        case "nine":
+          return 9;
+        case "ten":
+          return 10;
+        case "eleven":
+          return 11;
+        case "twelve":
+          return 12;
+        default:
+          return 0;
+      }
+    }
+
+    getViewID() {
+      this.viewid += 1;
+      return this.viewid;
+    }
+
 
 
 
